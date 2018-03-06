@@ -1,3 +1,4 @@
+import { withinBounds } from '../helpers';
 import Player from './Player';
 
 class Map {
@@ -16,18 +17,29 @@ class Map {
   }
 
   selectPlayers(selectStart: Coords, selectEnd: Coords) {
-    const { x: startX, y: startY } = selectStart;
-    const { x: endX, y: endY } = selectEnd;
-
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i];
       const { coords: { x, y } } = player;
       player.selected = false;
-      const inXRange = (x >= startX && x <= endX) || (x >= endX && x <= startX);
-      const inYRange = (y >= startY && y <= endY) || (y >= endY && y <= startY);
-      if (inXRange && inYRange) {
+      if (withinBounds(player.coords, selectStart, selectEnd)) {
         player.selected = true;
       }
+    }
+  }
+
+  selectPlayerAt(coords: Coords) {
+    const playersAtPos = this.players.filter(player =>
+      player.pointInRange(coords)
+    );
+    if (playersAtPos.length > 0) {
+      const player = playersAtPos[0];
+      player.selected = true;
+    }
+  }
+
+  clearSelected() {
+    for (let i = 0; i < this.players.length; i++) {
+      this.players[i].selected = false;
     }
   }
 
@@ -64,7 +76,7 @@ class Map {
           newY = playerY;
         }
 
-        if (this.playersAt({ x: newX, y: newY }).length == 0) {
+        if (this.playersAt({ x: newX, y: newY }).length === 0) {
           player.coords = { x: newX, y: newY };
         }
 

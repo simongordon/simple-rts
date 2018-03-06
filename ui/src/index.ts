@@ -1,3 +1,4 @@
+import { sameCoord } from './helpers';
 import Map from './models/Map';
 
 const canvas = document.getElementById('gamecanvas') as HTMLCanvasElement;
@@ -27,27 +28,38 @@ map.addPlayerAt({
   y: 107
 });
 
+let mouseLeftDown = false;
 let dragStart: Coords | null = null;
 let dragEnd: Coords | null = null;
 
 function mouseDownHandler({ layerX: x, layerY: y, button }: MouseEvent) {
-  if (button == MOUSE_LEFT) {
+  if (button === MOUSE_LEFT) {
+    map.clearSelected();
     dragStart = { x, y };
+    mouseLeftDown = true;
   }
 }
 
 function mouseUpHandler({ layerX: x, layerY: y, button }: MouseEvent) {
-  if (button == MOUSE_RIGHT) {
+  if (button === MOUSE_RIGHT) {
     map.moveSelectedTo({ x, y });
-  } else if (button == MOUSE_LEFT && dragStart != null && dragEnd != null) {
-    map.selectPlayers(dragStart, dragEnd);
+  } else if (button === MOUSE_LEFT) {
+    mouseLeftDown = false;
+    if (
+      dragStart != null &&
+      (dragEnd == null || sameCoord(dragStart, dragEnd))
+    ) {
+      map.selectPlayerAt(dragStart);
+    } else if (dragStart != null && dragEnd != null) {
+      map.selectPlayers(dragStart, dragEnd);
+    }
     dragStart = null;
     dragEnd = null;
   }
 }
 
-function mouseMoveHandler({ layerX: x, layerY: y, button }: MouseEvent) {
-  if (button == MOUSE_LEFT) {
+function mouseMoveHandler({ layerX: x, layerY: y }: MouseEvent) {
+  if (mouseLeftDown) {
     dragEnd = { x, y };
   }
 }
@@ -65,7 +77,7 @@ function draw() {
     const player = map.players[i];
     const { coords: { x, y }, selected } = player;
     ctx.beginPath();
-    ctx.arc(x, y, 10, 0, Math.PI * 2);
+    ctx.arc(x, y, player.width / 2, 0, Math.PI * 2);
     ctx.fillStyle = 'red';
     ctx.fill();
 
