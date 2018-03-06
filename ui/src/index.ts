@@ -9,6 +9,9 @@ const MOUSE_RIGHT = 2;
 canvas.addEventListener('mousedown', mouseDownHandler, false);
 canvas.addEventListener('mouseup', mouseUpHandler, false);
 canvas.addEventListener('mousemove', mouseMoveHandler, false);
+window.addEventListener('keypress', keyPressHandler, false);
+
+let paused = false;
 
 const map = new Map();
 map.addPlayerAt({
@@ -49,12 +52,14 @@ function mouseMoveHandler({ layerX: x, layerY: y, button }: MouseEvent) {
   }
 }
 
+function keyPressHandler(e: KeyboardEvent) {
+  if (e.key === 'p') {
+    paused = !paused;
+  }
+}
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = '#000000';
-  ctx.font = '30px Arial';
-  ctx.fillText('Hello!', canvas.width / 2 - 20, canvas.height / 2);
 
   for (let i = 0; i < map.players.length; i++) {
     const player = map.players[i];
@@ -83,7 +88,13 @@ function draw() {
     ctx.closePath();
   }
 
-  map.processFrame();
+  if (paused) {
+    ctx.fillStyle = '#000000';
+    ctx.font = '30px Arial';
+    ctx.fillText('Paused', canvas.width / 2 - 40, canvas.height / 2);
+  } else {
+    map.processFrame();
+  }
 }
 
 setInterval(draw, 10);
