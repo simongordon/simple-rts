@@ -36,7 +36,8 @@ function mouseDownHandler({ layerX: x, layerY: y, button }: MouseEvent) {
 function mouseUpHandler({ layerX: x, layerY: y, button }: MouseEvent) {
   if (button == MOUSE_RIGHT) {
     map.addPlayerAt({ x, y });
-  } else if (button == MOUSE_LEFT) {
+  } else if (button == MOUSE_LEFT && dragStart != null && dragEnd != null) {
+    map.selectPlayers(dragStart, dragEnd);
     dragStart = null;
     dragEnd = null;
   }
@@ -56,11 +57,19 @@ function draw() {
   ctx.fillText('Hello!', canvas.width / 2 - 20, canvas.height / 2);
 
   for (let i = 0; i < map.players.length; i++) {
-    const { x, y } = map.players[i].coords;
+    const player = map.players[i];
+    const { coords: { x, y }, selected } = player;
     ctx.beginPath();
     ctx.arc(x, y, 10, 0, Math.PI * 2);
     ctx.fillStyle = 'red';
     ctx.fill();
+
+    if (selected) {
+      ctx.strokeStyle = 'yellow';
+      ctx.stroke();
+    }
+
+    ctx.closePath();
   }
 
   if (dragStart != null && dragEnd != null) {

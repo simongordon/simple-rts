@@ -2,11 +2,13 @@ interface PlayerProps {
   coords: Coords;
 }
 
-class Player implements PlayerProps {
+class Player {
   coords: Coords;
+  selected: boolean;
 
   constructor(props: PlayerProps) {
     this.coords = props.coords;
+    this.selected = false;
   }
 }
 
