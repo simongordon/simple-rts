@@ -2,6 +2,7 @@ import { withinBounds } from '../helpers';
 
 interface PlayerProps {
   coords: Coords;
+  team: TeamID;
 }
 
 class Player {
@@ -9,9 +10,11 @@ class Player {
   selected: boolean;
   movingTo: Coords | null;
   width: number;
+  team: TeamID;
 
   constructor(props: PlayerProps) {
     this.coords = props.coords;
+    this.team = props.team;
     this.selected = false;
     this.movingTo = null;
     this.width = 20;

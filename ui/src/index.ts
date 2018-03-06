@@ -14,19 +14,41 @@ window.addEventListener('keypress', keyPressHandler, false);
 
 let paused = false;
 
+const TEAM1 = 1;
+const TEAM2 = 2;
 const map = new Map();
-map.addPlayerAt({
-  x: 20,
-  y: 45
+
+map.addTeam({
+  id: TEAM1,
+  colour: 'blue'
 });
-map.addPlayerAt({
-  x: 145,
-  y: 245
+
+map.addTeam({
+  id: TEAM2,
+  colour: 'red'
 });
-map.addPlayerAt({
-  x: 350,
-  y: 107
-});
+
+map.addPlayerAt(
+  {
+    x: 20,
+    y: 45
+  },
+  TEAM1
+);
+map.addPlayerAt(
+  {
+    x: 145,
+    y: 245
+  },
+  TEAM1
+);
+map.addPlayerAt(
+  {
+    x: 350,
+    y: 107
+  },
+  TEAM2
+);
 
 let mouseLeftDown = false;
 let dragStart: Coords | null = null;
@@ -78,7 +100,8 @@ function draw() {
     const { coords: { x, y }, selected } = player;
     ctx.beginPath();
     ctx.arc(x, y, player.width / 2, 0, Math.PI * 2);
-    ctx.fillStyle = 'red';
+    const playerTeam = map.teamFor(player);
+    ctx.fillStyle = playerTeam.colour;
     ctx.fill();
 
     if (selected) {
