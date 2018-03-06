@@ -1,3 +1,5 @@
+import Map from './models/Map';
+
 const canvas = document.getElementById('gamecanvas') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
@@ -8,17 +10,19 @@ canvas.addEventListener('mousedown', mouseDownHandler, false);
 canvas.addEventListener('mouseup', mouseUpHandler, false);
 canvas.addEventListener('mousemove', mouseMoveHandler, false);
 
-interface Coords {
-  x: number;
-  y: number;
-}
-
-const points: Coords[] = [
-  {
-    x: 20,
-    y: 45
-  }
-];
+const map = new Map();
+map.addPlayerAt({
+  x: 20,
+  y: 45
+});
+map.addPlayerAt({
+  x: 145,
+  y: 245
+});
+map.addPlayerAt({
+  x: 350,
+  y: 107
+});
 
 let dragStart: Coords | null = null;
 let dragEnd: Coords | null = null;
@@ -31,7 +35,7 @@ function mouseDownHandler({ layerX: x, layerY: y, button }: MouseEvent) {
 
 function mouseUpHandler({ layerX: x, layerY: y, button }: MouseEvent) {
   if (button == MOUSE_RIGHT) {
-    points.push({ x, y });
+    map.addPlayerAt({ x, y });
   } else if (button == MOUSE_LEFT) {
     dragStart = null;
     dragEnd = null;
@@ -51,8 +55,8 @@ function draw() {
   ctx.font = '30px Arial';
   ctx.fillText('Hello!', canvas.width / 2 - 20, canvas.height / 2);
 
-  for (let i = 0; i < points.length; i++) {
-    const { x, y } = points[i];
+  for (let i = 0; i < map.players.length; i++) {
+    const { x, y } = map.players[i].coords;
     ctx.beginPath();
     ctx.arc(x, y, 10, 0, Math.PI * 2);
     ctx.fillStyle = 'red';
