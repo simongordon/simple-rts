@@ -35,7 +35,7 @@ class Map {
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i];
       if (player.selected) {
-        player.movingTo = newPos;
+        player.moveTo(newPos);
       }
     }
   }
@@ -44,20 +44,34 @@ class Map {
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i];
       if (player.movingTo != null) {
-        const { x: newX, y: newY } = player.movingTo;
-        if (player.coords.x > newX) {
+        const { x: toX, y: toY } = player.movingTo;
+        if (player.coords.x > toX) {
           player.coords.x--;
-        } else if (player.coords.x < newX) {
+        } else if (player.coords.x < toX) {
           player.coords.x++;
         }
 
-        if (player.coords.y > newY) {
+        if (player.coords.y > toY) {
           player.coords.y--;
-        } else if (player.coords.y < newY) {
+        } else if (player.coords.y < toY) {
           player.coords.y++;
+        }
+
+        if (player.atDestination()) {
+          player.stopMoving();
+          if (this.playersAt({ x: toX, y: toY }).length > 1) {
+            const shuffleAmount = 10;
+            const randX = toX + shuffleAmount * (Math.random() > 0.5 ? 1 : -1);
+            const randY = toY + shuffleAmount * (Math.random() > 0.5 ? 1 : -1);
+            player.moveTo({ x: randX, y: randY });
+          }
         }
       }
     }
+  }
+
+  playersAt(coords: Coords) {
+    return this.players.filter(player => player.at(coords));
   }
 }
 
