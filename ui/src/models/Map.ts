@@ -44,27 +44,32 @@ class Map {
     for (let i = 0; i < this.players.length; i++) {
       const player = this.players[i];
       if (player.movingTo != null) {
+        const { x: playerX, y: playerY } = player.coords;
         const { x: toX, y: toY } = player.movingTo;
+        let newX;
         if (player.coords.x > toX) {
-          player.coords.x--;
-        } else if (player.coords.x < toX) {
-          player.coords.x++;
+          newX = playerX - 1;
+        } else if (playerX < toX) {
+          newX = playerX + 1;
+        } else {
+          newX = playerX;
         }
 
-        if (player.coords.y > toY) {
-          player.coords.y--;
-        } else if (player.coords.y < toY) {
-          player.coords.y++;
+        let newY;
+        if (playerY > toY) {
+          newY = playerY - 1;
+        } else if (playerY < toY) {
+          newY = playerY + 1;
+        } else {
+          newY = playerY;
+        }
+
+        if (this.playersAt({ x: newX, y: newY }).length == 0) {
+          player.coords = { x: newX, y: newY };
         }
 
         if (player.atDestination()) {
           player.stopMoving();
-          if (this.playersAt({ x: toX, y: toY }).length > 1) {
-            const shuffleAmount = 10;
-            const randX = toX + shuffleAmount * (Math.random() > 0.5 ? 1 : -1);
-            const randY = toY + shuffleAmount * (Math.random() > 0.5 ? 1 : -1);
-            player.moveTo({ x: randX, y: randY });
-          }
         }
       }
     }
