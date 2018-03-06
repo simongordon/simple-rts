@@ -82,6 +82,7 @@ function draw() {
     ctx.fill();
 
     if (selected) {
+      ctx.lineWidth = 4;
       ctx.strokeStyle = 'yellow';
       ctx.stroke();
     }
