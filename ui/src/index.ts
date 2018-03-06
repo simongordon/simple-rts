@@ -35,7 +35,7 @@ function mouseDownHandler({ layerX: x, layerY: y, button }: MouseEvent) {
 
 function mouseUpHandler({ layerX: x, layerY: y, button }: MouseEvent) {
   if (button == MOUSE_RIGHT) {
-    map.addPlayerAt({ x, y });
+    map.moveSelectedTo({ x, y });
   } else if (button == MOUSE_LEFT && dragStart != null && dragEnd != null) {
     map.selectPlayers(dragStart, dragEnd);
     dragStart = null;
@@ -82,6 +82,8 @@ function draw() {
     ctx.stroke();
     ctx.closePath();
   }
+
+  map.processFrame();
 }
 
 setInterval(draw, 10);

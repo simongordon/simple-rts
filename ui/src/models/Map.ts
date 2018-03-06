@@ -30,6 +30,35 @@ class Map {
       }
     }
   }
+
+  moveSelectedTo(newPos: Coords) {
+    for (let i = 0; i < this.players.length; i++) {
+      const player = this.players[i];
+      if (player.selected) {
+        player.movingTo = newPos;
+      }
+    }
+  }
+
+  processFrame() {
+    for (let i = 0; i < this.players.length; i++) {
+      const player = this.players[i];
+      if (player.movingTo != null) {
+        const { x: newX, y: newY } = player.movingTo;
+        if (player.coords.x > newX) {
+          player.coords.x--;
+        } else if (player.coords.x < newX) {
+          player.coords.x++;
+        }
+
+        if (player.coords.y > newY) {
+          player.coords.y--;
+        } else if (player.coords.y < newY) {
+          player.coords.y++;
+        }
+      }
+    }
+  }
 }
 
 export default Map;
