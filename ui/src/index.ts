@@ -16,7 +16,10 @@ let paused = false;
 
 const TEAM1 = 1;
 const TEAM2 = 2;
-const map = new Map();
+const map = new Map({
+  width: canvas.width,
+  height: canvas.height
+});
 
 map.addTeam({
   id: TEAM1,
@@ -28,27 +31,11 @@ map.addTeam({
   colour: 'red'
 });
 
-map.addPlayerAt(
-  {
-    x: 20,
-    y: 45
-  },
-  TEAM1
-);
-map.addPlayerAt(
-  {
-    x: 145,
-    y: 245
-  },
-  TEAM1
-);
-map.addPlayerAt(
-  {
-    x: 350,
-    y: 107
-  },
-  TEAM2
-);
+const playersEach = 5;
+for (let i = 0; i < playersEach; i++) {
+  map.addRandomPlayerFor(TEAM1);
+  map.addRandomPlayerFor(TEAM2);
+}
 
 let mouseLeftDown = false;
 let dragStart: Coords | null = null;

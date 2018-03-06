@@ -1,13 +1,22 @@
 import { withinBounds } from '../helpers';
 import Player from './Player';
 
+interface MapProps {
+  width: number;
+  height: number;
+}
+
 class Map {
   players: Player[];
   teams: Team[];
+  width: number;
+  height: number;
 
-  constructor() {
+  constructor(props: MapProps) {
     this.players = [];
     this.teams = [];
+    this.width = props.width;
+    this.height = props.height;
   }
 
   getTeam(teamID: TeamID) {
@@ -30,6 +39,14 @@ class Map {
   }
 
   addPlayerAt(coords: Coords, team: TeamID) {
+    this.addPlayer(new Player({ coords, team }));
+  }
+
+  addRandomPlayerFor(team: TeamID) {
+    const coords: Coords = {
+      x: Math.floor(Math.random() * this.width),
+      y: Math.floor(Math.random() * this.height)
+    };
     this.addPlayer(new Player({ coords, team }));
   }
 
